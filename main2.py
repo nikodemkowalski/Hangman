@@ -24,7 +24,6 @@ def random_word(list_creator):
     return word_random
 
 
-
 def letters_change(word, user_input):
     index = []
     word = enumerate(word)
@@ -54,6 +53,7 @@ def letter_replace(found_indexes, user_input):
 
 
 def life_modulation(user_input, found_indexes):
+    used_letters.append(user_input.upper()[0])
     if used_letters.count(user_input.upper()) > 1:
         used_letters.remove(user_input)
         print("\nPodano już taką literę\n")
@@ -87,7 +87,7 @@ def main_loop(lifes):
         user_input = input("Wpisz literę: ").upper()
         found_indexes = letters_change(word, user_input)
         letter_replace(found_indexes, user_input)
-        used_letters.append(user_input.upper()[0])
+
 
         if life_modulation(user_input, found_indexes):
             lifes -= 1
