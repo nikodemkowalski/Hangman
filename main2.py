@@ -87,12 +87,11 @@ def main_loop(lifes):
         user_input = input("Wpisz literę: ").upper()
         found_indexes = letters_change(word, user_input)
         letter_replace(found_indexes, user_input)
-
-
+        
         if life_modulation(user_input, found_indexes):
             lifes -= 1
             print("Pozostałe życie: ", lifes)
-
+            
         loose(lifes)
         win(word)
 
