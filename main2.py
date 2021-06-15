@@ -1,99 +1,89 @@
-import random
+from random import choice
+from itertools import islice
+
+password_list = []
 used_letters = []
-user_word = []
-word_list = []
-lifes = 5
+lifes = 7
+num = 0
 
 
-def decor(func):
-    def wrapp():
-        print("-----------------------")
-        func()
-    return wrapp
-
-
-def list_creator(word_list):
+def password_creator():
     print("Wpisz 3 proponowane hasła: ")
     for i in range(0, 3):
-        word_list.append(input("-").upper())
+        password_list.append(input("-").upper())
+    return password_creator
 
 
-def random_word(list_creator):
-    list_creator(word_list)
-    word_random = random.choice(word_list)
-    return word_random
+def password_select():
+    password_creator()
+    password_random = choice(password_list)
+    return password_random
 
 
-def letters_change(word, user_input):
-    index = []
-    word = enumerate(word)
-    for i, letter in word:
-        if user_input == letter:
-            index.append(i)
-    return index
+password = list(password_select())
 
 
-@decor
-def print_output():
-    connected_word = "".join(user_word)
-    print(F"Odgadnięte słowo: {connected_word}")
-    print(F"Zastosowane litery:{used_letters}")
+def hide_password():
+    output = ''
+    for letter in password:
+        if letter in used_letters:
+            output += letter
+        else:
+            output += "_"
+    return output
 
 
-def hidden(word):
-    len(word) * " _ "
-    for _ in word:
-        user_word.append("_")
+def illustration():
+    global num
+    with open('ilustration', "r") as text_file:
+        for line in islice(text_file, num, num + 7):
+            print(line)
+        num += 8
 
 
-def letter_replace(found_indexes, user_input):
-    if len(found_indexes) != 0:
-        for index in found_indexes:
-            user_word[index] = user_input
+def life_subtract(Input):
+    global lifes
+    if Input[0] not in password:
+        illustration()
+        lifes -= 1
+        print("Brak takiej litery")
+        print(F"Pozostałe życie: {lifes}")
 
 
-def life_modulation(user_input, found_indexes):
-    used_letters.append(user_input.upper()[0])
-    if used_letters.count(user_input.upper()) > 1:
-        used_letters.remove(user_input)
-        print("\nPodano już taką literę\n")
-
+def found_repetition(Input):
+    if used_letters.count(Input[0]) > 1:
+        used_letters.remove(Input[0])
+        print('\nPodano już taką litere!')
     else:
-        if len(found_indexes) == 0:
-            print("\nBrak takiej litery")
-            return True
+        life_subtract(Input)
 
 
-def loose(lifes):
+def game_status():
     if lifes == 0:
         print()
         print("Koniec gry")
         quit()
 
-
-def win(word):
-    if user_word == word:
-        password = "".join(user_word)
-        print("\nOdgadłeś slowo! - ", password)
+    elif '_' not in hide_password():
+        print()
+        print('Wygrana!')
         quit()
 
 
-def main_loop(lifes):
-    word = list(random_word(list_creator))
-    hidden(word)
+def print_data():
+    print("=" * 20)
+    print(F"\nOdgadnięte słowo: {hide_password()}")
+    print(F"Zastosowane litery:{used_letters}")
 
+
+def main_loop():
+    hide_password()
     while True:
-        print_output()
-        user_input = input("Wpisz literę: ").upper()
-        found_indexes = letters_change(word, user_input)
-        letter_replace(found_indexes, user_input)
-        
-        if life_modulation(user_input, found_indexes):
-            lifes -= 1
-            print("Pozostałe życie: ", lifes)
-            
-        loose(lifes)
-        win(word)
+        print_data()
+        Input = input('Wprowadz wartość: ').upper()
+        used_letters.append(Input[0])
+        found_repetition(Input)
+        game_status()
 
 
-main_loop(lifes)
+main_loop()
