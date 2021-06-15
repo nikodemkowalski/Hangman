@@ -35,7 +35,7 @@ def hide_password():
 
 def illustration():
     global num
-    with open('ilustration', "r") as text_file:
+    with open('illustration', "r") as text_file:
         for line in islice(text_file, num, num + 7):
             print(line)
         num += 8
