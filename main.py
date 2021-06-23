@@ -14,8 +14,10 @@ def password_creator():
     return password_creator
 
 
+password_creator()
+
+
 def password_select():
-    password_creator()
     password_random = choice(password_list)
     return password_random
 
@@ -33,32 +35,32 @@ def hide_password():
     return output
 
 
-def illustration():
+def show_illustration():
     global num
-    with open('illustration', "r") as text_file:
+    with open('illustration.txt', "r") as text_file:
         for line in islice(text_file, num, num + 7):
             print(line)
         num += 8
 
 
-def life_subtract(Input):
+def subtract_life():
     global lifes
-    if Input[0] not in password:
-        illustration()
+    if used_letters[-1] not in password:
+        show_illustration()
         lifes -= 1
         print("Brak takiej litery")
         print(F"Pozostałe życie: {lifes}")
 
 
-def found_repetition(Input):
-    if used_letters.count(Input[0]) > 1:
-        used_letters.remove(Input[0])
+def find_repetition(user_input):
+    if used_letters.count(user_input[0]) > 1:
+        used_letters.remove(user_input[0])
         print('\nPodano już taką litere!')
     else:
-        life_subtract(Input)
+        return False
 
 
-def game_status():
+def show_result():
     if lifes == 0:
         print()
         print("Koniec gry")
@@ -80,10 +82,11 @@ def main_loop():
     hide_password()
     while True:
         print_data()
-        Input = input('Wprowadz wartość: ').upper()
-        used_letters.append(Input[0])
-        found_repetition(Input)
-        game_status()
+        user_input = input('Wprowadz wartość: ').upper()
+        used_letters.append(user_input[0])
+        if find_repetition(user_input) is False:
+            subtract_life()
+        show_result()
 
 
 main_loop()
